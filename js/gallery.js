@@ -4,8 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Массив с артом
     const images = [
         "images/art1.jpg",
-        "images/art2.png",
-        "images/art3.jpeg"
+        "images/art2.jpg",
         // Просто добавляй новые строки сюда
     ];
 
