@@ -1,16 +1,19 @@
 document.addEventListener("DOMContentLoaded", function() {
     const gallery = document.getElementById("gallery");
 
-    // Здесь перечисляем картинки
+    // Массив с артом
     const images = [
-        // Просто добавляй сюда новые файлы: "images/название.jpg",
-        "images/sample1.jpg",
-        "images/sample2.jpg"
+        "images/art1.jpg",
+        "images/art2.png",
+        "images/art3.jpeg"
+        // Просто добавляй новые строки сюда
     ];
 
     images.forEach(src => {
         const img = document.createElement("img");
         img.src = src;
+        img.alt = "Арт";
+        img.loading = "lazy"; // Ленивая загрузка
         gallery.appendChild(img);
     });
 });
