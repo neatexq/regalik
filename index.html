@@ -3,57 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Арты моей любимой блогерши</title>
-<style>
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        background-color: #fff8e1;
-        margin: 0;
-        padding: 0;
-        color: #5a4636;
-    }
-
-    header {
-        text-align: center;
-        padding: 20px;
-        background-color: #ffe082;
-        position: sticky;
-        top: 0;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-
-    header h1 {
-        margin: 0;
-        font-size: 2rem;
-    }
-
-    .gallery {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 15px;
-        padding: 20px;
-    }
-
-    .gallery img {
-        width: 100%;
-        height: auto;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        object-fit: cover;
-        transition: transform 0.3s;
-    }
-
-    .gallery img:hover {
-        transform: scale(1.05);
-    }
-
-    footer {
-        text-align: center;
-        padding: 15px;
-        font-size: 0.9rem;
-        color: #8d6e63;
-    }
-</style>
+<title>Арты для [Имя]</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -62,7 +13,7 @@
 </header>
 
 <div class="gallery" id="gallery">
-    <!-- Сюда будут добавляться арты -->
+    <!-- Картинки будут подгружаться автоматически -->
 </div>
 
 <footer>
@@ -70,12 +21,9 @@
 </footer>
 
 <script>
-    // Загружаем список картинок
     const images = [
         'art1.jpg',
-        'art2.png',
-        'art3.jpg'
-        // Добавляй сюда новые файлы
+        'art2.png'
     ];
 
     const gallery = document.getElementById('gallery');
