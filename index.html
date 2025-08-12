@@ -1,40 +1,26 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Арты для [Имя]</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regalik — Галерея Реджины</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <header>
+        <h1>🥐 Regalik</h1>
+        <p>Галерея любимой блогерши Реджины</p>
+    </header>
 
-<header>
-    <h1>🎀 Арты для [Имя Блогерши] 🎀</h1>
-</header>
+    <main>
+        <div class="gallery" id="gallery"></div>
+    </main>
 
-<div class="gallery" id="gallery">
-    <!-- Картинки будут подгружаться автоматически -->
-</div>
+    <footer>
+        <p>С любовью для Реджины 💛</p>
+    </footer>
 
-<footer>
-    Сделано с любовью ❤️
-</footer>
-
-<script>
-    const images = [
-        'art1.jpg',
-        'art2.png'
-    ];
-
-    const gallery = document.getElementById('gallery');
-
-    images.forEach(img => {
-        const imageElement = document.createElement('img');
-        imageElement.src = 'images/' + img;
-        imageElement.alt = 'Арт';
-        gallery.appendChild(imageElement);
-    });
-</script>
-
+    <script src="script.js"></script>
 </body>
 </html>
