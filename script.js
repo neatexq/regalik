@@ -4,7 +4,7 @@ function showPage(pageId){
 }
 
 async function loadGallery(){
-  const res = await fetch('data/artworks.json');
+  const res = await fetch('./data/artworks.json');
   const artworks = await res.json();
   const grid = document.getElementById('gallery-grid');
   grid.innerHTML='';
@@ -30,3 +30,4 @@ function closeModal(){
 }
 
 window.onload=loadGallery;
+
