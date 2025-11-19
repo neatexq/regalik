@@ -19,6 +19,18 @@
             --shadow: 0 10px 30px -10px rgba(93, 84, 73, 0.15);
         }
 
+                html {
+            /* Запрещает "пружинить" страницу за пределы контента */
+            overscroll-behavior-y: none;
+            /* Делает скролл на айфонах более плавным */
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        body {
+            /* Запрет пружинки для body */
+            overscroll-behavior-y: none;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Nunito', sans-serif; overflow-x: hidden; }
 
@@ -890,8 +902,15 @@ function renderGallery() {
         }
 
         // Добавляем слушатель изменения размера окна, чтобы перестраивать колонки
+        let lastWidth = window.innerWidth; // Запоминаем ширину экрана
+
         window.addEventListener('resize', () => {
-            // Небольшая задержка чтобы не грузить процессор
+            // Если ширина экрана НЕ изменилась (значит изменилась только высота из-за скролла),
+            // то ничего не делаем! Это уберет прыжки.
+            if (window.innerWidth === lastWidth) return;
+
+            // Если ширина реально изменилась (повернули телефон), тогда перестраиваем
+            lastWidth = window.innerWidth;
             setTimeout(renderGallery, 100);
         });
 
