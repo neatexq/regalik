@@ -15,7 +15,7 @@
             --accent-dark: #8E7C68;
             --text-main: #5D5449;
             --text-light: #9CA3AF;
-            --gold: #FFD700; /* Цвет для избранного */
+            --gold: #FFD700;
             --shadow: 0 10px 30px -10px rgba(93, 84, 73, 0.15);
         }
 
@@ -94,45 +94,45 @@
         }
 
         /* --- ГАЛЕРЕЯ --- */
-        .gallery-container { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px; column-count: 3; column-gap: 24px; }
-        @media (max-width: 900px) { .gallery-container { column-count: 2; } }
-        @media (max-width: 600px) { .gallery-container { column-count: 1; } }
+        .gallery-container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 20px 60px; 
+            
+            display: flex; /* Ставим колонки рядом */
+            gap: 24px;     /* Расстояние между колонками */
+            align-items: flex-start; /* Прижимаем к верху */
+        }
+
+        /* Стиль для скриптовой колонки */
+        .gallery-column {
+            display: flex;
+            flex-direction: column;
+            gap: 24px; /* Расстояние между артами по вертикали */
+            flex: 1;   /* Колонки равной ширины */
+            min-width: 0; /* Защита от переполнения */
+        }
+
 
         .art-card { 
             background: var(--card-bg); 
             border-radius: 20px; 
-            margin-bottom: 24px; 
+            margin-bottom: 0; 
             overflow: hidden; 
-            break-inside: avoid; 
             box-shadow: var(--shadow); 
             cursor: pointer; 
             transition: all 0.4s; 
             position: relative; 
-            border: 4px solid transparent; /* Резерв для рамки */
+            border: 4px solid transparent;
+            width: 100%; /* Растягиваем на всю ширину колонки */
         }
         
         .art-card:hover { transform: scale(1.02); box-shadow: 0 20px 40px -10px rgba(93, 84, 73, 0.25); }
         .art-card img { width: 100%; display: block; height: auto; }
         
-        /* СТИЛИ ДЛЯ ЛЮБИМОГО АРТА (РАМКА) */
-        .art-card.favorite {
-            border-color: var(--gold);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-        }
-        
-        /* Значок короны */
-        .fav-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: white;
-            width: 35px; height: 35px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            z-index: 10;
-        }
+        /* Рамка для любимых */
+        .art-card.favorite { border-color: var(--gold); box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
+        .fav-badge { position: absolute; top: 10px; right: 10px; background: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 10; }
 
         .card-overlay { padding: 15px; text-align: center; background: #fff; }
         .card-author { font-weight: 800; color: var(--accent-dark); font-size: 1.1rem; }
@@ -169,7 +169,6 @@
         <p class="subtitle">Самая сладкая коллекция артов для Regcandy</p>
     </header>
 
-    <!-- ПАНЕЛЬ УПРАВЛЕНИЯ -->
     <div class="controls-container">
         <div class="controls-top">
             <div class="control-group">
@@ -192,10 +191,8 @@
         </div>
     </div>
 
-    <!-- СЕТКА С АРТАМИ -->
     <div class="gallery-container" id="gallery"></div>
 
-    <!-- МОДАЛЬНОЕ ОКНО -->
     <div class="modal" id="artModal">
         <div class="modal-content">
             <span class="modal-close" id="closeModal">&times;</span>
@@ -211,10 +208,11 @@
     <script>
         // ===========================================================
         // ТВОИ АРТЫ
-        // Чтобы добавить любимый арт, напиши: isFavorite: true
-        // Чтобы добавить несколько авторов, пиши через запятую: "@Ivan, @Maria"
+        // 1. Если дата неизвестна, пиши: "дата неизвестна"
+        // 2. Если автор неизвестен, пиши: "автор неизвестен"
+        // 3. Если нет ссылки на ТГ, оставь поле link пустым: ""
         // ===========================================================
-    const arts = [
+const arts = [
         {
             filename: "regcandy1.jpg",
             author: "@meowwwwwNy",
@@ -599,9 +597,168 @@
             date: "18.05.2024",
             link: "https://t.me/StikersStLoL/28"
         },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             {
+            filename: "regcandy65.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy66.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy67.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy68.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy69.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy70.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy72.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy73.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy74.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy75.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy76.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy77.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy78.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy79.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy80.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy81.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy82.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy83.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy84.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy85.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy86.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy87.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy88.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy89.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy90.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy91.jpg",
+            author: "Автор неизвестен",
+            date: "Дата неизвестна",
+            link: ""
+        },
     ];
-    
-        // ===========================================================
+    // ===========================================================
+
+    // НЕ ЗАБУДЬ ВСТАВИТЬ СЮДА ВЕСЬ СПИСОК АРТОВ, КОТОРЫЙ БЫЛ РАНЬШЕ!
+    // Я сократил его для примера, но код работает со всем списком.
 
         const gallery = document.getElementById('gallery');
         const dateInput = document.getElementById('dateFilter');
@@ -610,23 +767,37 @@
         const authorsContainer = document.getElementById('authorsList');
         let selectedAuthors = [];
 
+        // Функция парсинга даты
+        // Если дата некорректная или "дата неизвестна", возвращает null
         function parseDate(dateStr) {
-            const [day, month, year] = dateStr.split('.').map(Number);
+            if (!dateStr) return null;
+            const lowerStr = dateStr.toLowerCase().trim();
+            if (lowerStr === 'дата неизвестна' || lowerStr === '') return null;
+            
+            const parts = dateStr.split('.');
+            if (parts.length !== 3) return null;
+            
+            const [day, month, year] = parts.map(Number);
             return new Date(year, month - 1, day);
         }
 
-        // Разбиваем строку авторов на массив ("@A, @B" -> ["@A", "@B"])
+        // Проверка на "неизвестность" для сортировки (автор или дата)
+        function isUnknown(art) {
+            const dateUnknown = !parseDate(art.date);
+            const authorUnknown = art.author.toLowerCase().includes('автор неизвестен');
+            return dateUnknown || authorUnknown;
+        }
+
         function getAuthorsArray(authorString) {
             return authorString.split(',').map(s => s.trim());
         }
 
         function initAuthors() {
-            // Собираем ВСЕХ уникальных авторов, разбивая строки с запятыми
             const allAuthorsSet = new Set();
             arts.forEach(art => {
                 getAuthorsArray(art.author).forEach(a => allAuthorsSet.add(a));
             });
-            const allAuthors = [...allAuthorsSet].sort(); // Сортировка по алфавиту
+            const allAuthors = [...allAuthorsSet].sort();
 
             authorsContainer.innerHTML = '';
             allAuthors.forEach(author => {
@@ -644,58 +815,85 @@
             });
         }
 
-        function renderGallery() {
+function renderGallery() {
             gallery.innerHTML = '';
             
+            // 1. ФИЛЬТРАЦИЯ
             let filteredArts = arts.filter(art => {
-                // 1. Фильтр по дате
                 if (dateInput.value) {
+                    const parsedArtDate = parseDate(art.date);
+                    if (!parsedArtDate) return false;
                     const inputDate = new Date(dateInput.value).setHours(0,0,0,0);
-                    const artDateObj = parseDate(art.date).setHours(0,0,0,0);
+                    const artDateObj = parsedArtDate.setHours(0,0,0,0);
                     if (inputDate !== artDateObj) return false; 
                 }
-                // 2. Фильтр по авторам (Мульти-авторность)
                 if (selectedAuthors.length > 0) {
                     const artAuthors = getAuthorsArray(art.author);
-                    // Если хотя бы один из авторов арта есть в списке выбранных - показываем
                     const hasMatch = selectedAuthors.some(sel => artAuthors.includes(sel));
                     if (!hasMatch) return false;
                 }
                 return true;
             });
 
-            // Сортировка
+            // 2. СОРТИРОВКА
             filteredArts.sort((a, b) => {
+                const unknownA = isUnknown(a);
+                const unknownB = isUnknown(b);
+                if (unknownA && !unknownB) return 1;
+                if (!unknownA && unknownB) return -1;
                 const dateA = parseDate(a.date);
                 const dateB = parseDate(b.date);
-                return sortSelect.value === 'newest' ? dateB - dateA : dateA - dateB;
+                const timeA = dateA ? dateA.getTime() : 0;
+                const timeB = dateB ? dateB.getTime() : 0;
+                return sortSelect.value === 'newest' ? timeB - timeA : timeA - timeB;
             });
 
             if (filteredArts.length === 0) {
-                gallery.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-light);">Ничего не найдено 🥺</div>';
+                gallery.innerHTML = '<div style="width:100%; text-align: center; padding: 40px; color: var(--text-light);">Ничего не найдено 🥺</div>';
                 return;
             }
 
-            filteredArts.forEach(art => {
+            // 3. РАСПРЕДЕЛЕНИЕ ПО КОЛОНКАМ (MASONRY ЛОГИКА)
+            
+            // Определяем количество колонок по ширине экрана
+            const width = window.innerWidth;
+            let columnsCount = 3; // По умолчанию 3
+            if (width <= 900) columnsCount = 2;
+            if (width <= 600) columnsCount = 1;
+
+            // Создаем массивы для колонок
+            const columns = Array.from({ length: columnsCount }, () => document.createElement('div'));
+            columns.forEach(col => {
+                col.className = 'gallery-column';
+                gallery.appendChild(col);
+            });
+
+            // Раскидываем карты: 1-я в 1 кол, 2-я во 2 кол, 3-я в 3 кол, 4-я снова в 1 кол...
+            filteredArts.forEach((art, index) => {
                 const card = document.createElement('div');
-                // Если любимый - добавляем класс favorite
                 card.className = `art-card ${art.isFavorite ? 'favorite' : ''}`;
-                
-                // Значок короны для любимых
                 const badge = art.isFavorite ? '<div class="fav-badge">👑</div>' : '';
 
                 card.innerHTML = `
                     ${badge}
-                    <img src="images/${art.filename}" alt="Art by ${art.author}" loading="lazy">
+                    <img src="images/${art.filename}" alt="Art" loading="lazy">
                     <div class="card-overlay">
                         <div class="card-author">${art.author}</div>
                         <div class="card-date">${art.date}</div>
                     </div>
                 `;
                 card.onclick = () => openModal(art);
-                gallery.appendChild(card);
+                
+                // Добавляем в нужную колонку
+                columns[index % columnsCount].appendChild(card);
             });
         }
+
+        // Добавляем слушатель изменения размера окна, чтобы перестраивать колонки
+        window.addEventListener('resize', () => {
+            // Небольшая задержка чтобы не грузить процессор
+            setTimeout(renderGallery, 100);
+        });
 
         dateInput.addEventListener('change', renderGallery);
         resetDateBtn.addEventListener('click', () => { dateInput.value = ''; renderGallery(); });
@@ -714,7 +912,15 @@
             mEl.img.src = `images/${art.filename}`;
             mEl.author.textContent = art.author;
             mEl.date.textContent = art.date;
-            mEl.link.href = art.link;
+            
+            // Логика кнопки Телеграм
+            if (art.link && art.link.trim() !== "") {
+                mEl.link.href = art.link;
+                mEl.link.style.display = "inline-block"; // Показать
+            } else {
+                mEl.link.style.display = "none"; // Скрыть
+            }
+
             modal.classList.add('open');
             document.body.style.overflow = 'hidden';
         }
