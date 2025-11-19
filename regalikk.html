@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regalik Gallery 🥐</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #FFFBF0;
+            --card-bg: #FFFFFF;
+            --accent-pink: #FFD1DC;
+            --accent-pink-dark: #ffb6c1;
+            --accent-dark: #8E7C68;
+            --text-main: #5D5449;
+            --text-light: #9CA3AF;
+            --gold: #FFD700; /* Цвет для избранного */
+            --shadow: 0 10px 30px -10px rgba(93, 84, 73, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Nunito', sans-serif; overflow-x: hidden; }
+
+        /* --- ШАПКА --- */
+        header { text-align: center; padding: 50px 20px 30px; }
+        h1 { font-family: 'Pacifico', cursive; font-size: 4rem; color: var(--accent-dark); text-shadow: 2px 2px 0px var(--accent-pink); position: relative; display: inline-block; }
+        h1::after { content: '🥐'; position: absolute; right: -50px; top: 0; transform: rotate(20deg); font-size: 3rem; animation: float 3s ease-in-out infinite; }
+        .subtitle { color: var(--text-light); font-size: 1.1rem; margin-top: 10px; }
+
+        /* --- ПАНЕЛЬ УПРАВЛЕНИЯ --- */
+        .controls-container {
+            max-width: 1000px;
+            margin: 0 auto 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .controls-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+
+        .control-group { display: flex; align-items: center; gap: 10px; }
+        label { font-weight: 800; color: var(--accent-dark); }
+
+        select, input[type="date"] {
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 2px solid #eee;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            color: var(--text-main);
+            outline: none;
+            cursor: pointer;
+            transition: 0.3s;
+            background: #FDFBF7;
+        }
+        select:hover, input[type="date"]:hover { border-color: var(--accent-pink); }
+        
+        .reset-date-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #ccc; transition: 0.3s; }
+        .reset-date-btn:hover { color: #ff6b6b; transform: scale(1.1); }
+
+        /* Авторы */
+        .authors-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .author-chip {
+            background: #f0f0f0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .author-chip:hover { background: #e0e0e0; }
+        .author-chip.active {
+            background: var(--accent-pink);
+            color: white;
+            border-color: var(--accent-pink-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 182, 193, 0.4);
+        }
+
+        /* --- ГАЛЕРЕЯ --- */
+        .gallery-container { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px; column-count: 3; column-gap: 24px; }
+        @media (max-width: 900px) { .gallery-container { column-count: 2; } }
+        @media (max-width: 600px) { .gallery-container { column-count: 1; } }
+
+        .art-card { 
+            background: var(--card-bg); 
+            border-radius: 20px; 
+            margin-bottom: 24px; 
+            overflow: hidden; 
+            break-inside: avoid; 
+            box-shadow: var(--shadow); 
+            cursor: pointer; 
+            transition: all 0.4s; 
+            position: relative; 
+            border: 4px solid transparent; /* Резерв для рамки */
+        }
+        
+        .art-card:hover { transform: scale(1.02); box-shadow: 0 20px 40px -10px rgba(93, 84, 73, 0.25); }
+        .art-card img { width: 100%; display: block; height: auto; }
+        
+        /* СТИЛИ ДЛЯ ЛЮБИМОГО АРТА (РАМКА) */
+        .art-card.favorite {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+        
+        /* Значок короны */
+        .fav-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            width: 35px; height: 35px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .card-overlay { padding: 15px; text-align: center; background: #fff; }
+        .card-author { font-weight: 800; color: var(--accent-dark); font-size: 1.1rem; }
+        .card-date { font-size: 0.85rem; color: var(--text-light); margin-top: 2px; }
+
+        /* --- МОДАЛКА --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 251, 240, 0.95); z-index: 1000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(5px); }
+        .modal.open { display: flex; opacity: 1; }
+        .modal-content { background: white; padding: 20px; border-radius: 30px; max-width: 900px; width: 90%; max-height: 90vh; display: flex; gap: 30px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); position: relative; overflow-y: auto; }
+        .modal-image-container { flex: 1.5; display: flex; align-items: center; justify-content: center; background: #F8F8F8; border-radius: 20px; overflow: hidden; }
+        .modal-image-container img { max-width: 100%; max-height: 70vh; object-fit: contain; }
+        .modal-info { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 10px; }
+        .modal-close { position: absolute; top: 20px; right: 20px; font-size: 2rem; cursor: pointer; color: var(--text-light); line-height: 1; }
+        .modal-close:hover { color: var(--accent-dark); }
+        
+        .modal-author-text { font-size: 2rem; font-weight: 800; color: var(--accent-dark); margin-bottom: 5px; line-height: 1.2; }
+        .modal-date-text { color: var(--text-light); font-size: 1rem; margin-bottom: 20px; }
+
+        .btn-telegram { margin-top: 10px; display: inline-block; background-color: #0088cc; color: white; text-decoration: none; padding: 12px 24px; border-radius: 12px; text-align: center; font-weight: bold; transition: 0.3s; }
+        .btn-telegram:hover { background-color: #0077b5; transform: translateY(-2px); }
+        
+        @media (max-width: 768px) { 
+            .modal-content { flex-direction: column; } 
+            .modal-image-container { width: 100%; }
+            .controls-top { flex-direction: column; align-items: flex-start; }
+        }
+        @keyframes float { 0%, 100% { transform: rotate(20deg) translateY(0); } 50% { transform: rotate(25deg) translateY(-10px); } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Regalik</h1>
+        <p class="subtitle">Самая сладкая коллекция артов для Regcandy</p>
+    </header>
+
+    <!-- ПАНЕЛЬ УПРАВЛЕНИЯ -->
+    <div class="controls-container">
+        <div class="controls-top">
+            <div class="control-group">
+                <label>📅 Дата:</label>
+                <input type="date" id="dateFilter">
+                <button class="reset-date-btn" id="resetDate" title="Сбросить дату">✖</button>
+            </div>
+            <div class="control-group">
+                <label>⇅ Порядок:</label>
+                <select id="sortOrder">
+                    <option value="newest">Сначала новые</option>
+                    <option value="oldest">Сначала старые</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="controls-bottom">
+            <label style="display:block; margin-bottom: 10px;">🎨 Авторы (можно несколько):</label>
+            <div class="authors-list" id="authorsList"></div>
+        </div>
+    </div>
+
+    <!-- СЕТКА С АРТАМИ -->
+    <div class="gallery-container" id="gallery"></div>
+
+    <!-- МОДАЛЬНОЕ ОКНО -->
+    <div class="modal" id="artModal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeModal">&times;</span>
+            <div class="modal-image-container"><img src="" id="modalImg"></div>
+            <div class="modal-info">
+                <div class="modal-author-text" id="modalAuthor"></div>
+                <div class="modal-date-text">Дата: <span id="modalDate"></span></div>
+                <a href="#" target="_blank" class="btn-telegram" id="modalLink">Посмотреть в Telegram ✈️</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===========================================================
+        // ТВОИ АРТЫ
+        // Чтобы добавить любимый арт, напиши: isFavorite: true
+        // Чтобы добавить несколько авторов, пиши через запятую: "@Ivan, @Maria"
+        // ===========================================================
+    const arts = [
+        {
+            filename: "regcandy1.jpg",
+            author: "@meowwwwwNy",
+            date: "16.05.2025", 
+            link: "https://t.me/Ki1ttyykat/1014"
+        },
+        {
+            filename: "regcandy2.jpg",
+            author: "@meowwwwwNy",
+            date: "02.10.2025",
+            link: "https://t.me/Ki1ttyykat/1210"
+        },
+        {
+            filename: "regcandy3.jpg",
+            author: "@meowwwwwNy",
+            date: "30.09.2025",
+            link: "https://t.me/Ki1ttyykat/1208"
+        },
+         {
+            filename: "regcandy4.jpg",
+            author: "@meowwwwwNy",
+            date: "29.09.2025",
+            link: "https://t.me/Ki1ttyykat/1204"
+        },
+                     {
+            filename: "regcandy5.jpg",
+            author: "@meowwwwwNy",
+            date: "21.08.2025",
+            link: "https://t.me/Ki1ttyykat/1154"
+        },
+                     {
+            filename: "regcandy6.jpg",
+            author: "@meowwwwwNy",
+            date: "17.08.2025",
+            link: "https://t.me/Ki1ttyykat/1150"
+        },
+                                 {
+            filename: "regcandy7.jpg",
+            author: "@meowwwwwNy",
+            date: "22.07.2025",
+            link: "https://t.me/Ki1ttyykat/1116?single"
+        },
+                                             {
+            filename: "regcandy8.jpg",
+            author: "@meowwwwwNy",
+            date: "13.07.2025",
+            link: "https://t.me/Ki1ttyykat/1102?single"
+        },
+                                             {
+            filename: "regcandy9.jpg",
+            author: "@meowwwwwNy",
+            date: "21.06.2025",
+            link: "https://t.me/Ki1ttyykat/1082"
+        },
+                                             {
+            filename: "regcandy10.jpg",
+            author: "@meowwwwwNy",
+            date: "20.06.2025",
+            link: "https://t.me/Ki1ttyykat/1080"
+        },
+                                                         {
+            filename: "regcandy11.jpg",
+            author: "@meowwwwwNy",
+            date: "11.06.2025",
+            link: "https://t.me/Ki1ttyykat/1069"
+        },
+                                                                     {
+            filename: "regcandy12.jpg",
+            author: "@meowwwwwNy",
+            date: "03.06.2025",
+            link: "https://t.me/Ki1ttyykat/1045"
+        },
+                                                                     {
+            filename: "regcandy13.jpg",
+            author: "@meowwwwwNy",
+            date: "23.05.2025",
+            link: "https://t.me/Ki1ttyykat/1021"
+        },
+                                                                     {
+            filename: "regcandy14.jpg",
+            author: "@meowwwwwNy",
+            date: "01.05.2025",
+            link: "https://t.me/Ki1ttyykat/984"
+        },
+                                                                                 {
+            filename: "regcandy15.jpg",
+            author: "@meowwwwwNy",
+            date: "25.04.2025",
+            link: "https://t.me/Ki1ttyykat/964"
+        },
+                                                                                 {
+            filename: "regcandy16.jpg",
+            author: "@meowwwwwNy",
+            date: "13.04.2025",
+            link: "https://t.me/Ki1ttyykat/926"
+        },
+                                                                                 {
+            filename: "regcandy17.jpg",
+            author: "@meowwwwwNy",
+            date: "09.04.2025",
+            link: "https://t.me/Ki1ttyykat/902"
+        },
+                                                                                             {
+            filename: "regcandy18.jpg",
+            author: "@meowwwwwNy",
+            date: "08.04.2025",
+            link: "https://t.me/Ki1ttyykat/896"
+        },
+                                                                                                         {
+            filename: "regcandy19.jpg",
+            author: "@meowwwwwNy",
+            date: "05.04.2025",
+            link: "https://t.me/Ki1ttyykat/882"
+        },
+                                                                                                                     {
+            filename: "regcandy20.jpg",
+            author: "@meowwwwwNy",
+            date: "03.04.2025",
+            link: "https://t.me/Ki1ttyykat/882"
+        },
+                                                                                                                                 {
+            filename: "regcandy21.jpg",
+            author: "@meowwwwwNy",
+            date: "28.03.2025",
+            link: "https://t.me/Ki1ttyykat/845"
+        },
+                                                                                                                                             {
+            filename: "regcandy22.jpg",
+            author: "@meowwwwwNy",
+            date: "26.03.2025",
+            link: "https://t.me/Ki1ttyykat/833"
+        },
+                                                                                                                                                         {
+            filename: "regcandy23.jpg",
+            author: "@meowwwwwNy",
+            date: "15.03.2025",
+            link: "https://t.me/Ki1ttyykat/781"
+        },
+                                                                                                                                                                     {
+            filename: "regcandy24.jpg",
+            author: "@meowwwwwNy, @DemogorgonXD",
+            date: "07.03.2025",
+            link: "https://t.me/Ki1ttyykat/751"
+        },
+                                                                                                                                                                                 {
+            filename: "regcandy25.jpg",
+            author: "@meowwwwwNy",
+            date: "07.03.2025",
+            link: "https://t.me/Ki1ttyykat/746"
+        },
+                                                                                                                                                                                             {
+            filename: "regcandy26.jpg",
+            author: "@meowwwwwNy",
+            date: "21.02.2025",
+            link: "https://t.me/Ki1ttyykat/714"
+        },
+                                                                                                                                                                                                         {
+            filename: "regcandy27.jpg",
+            author: "@meowwwwwNy",
+            date: "02.02.2025",
+            link: "https://t.me/Ki1ttyykat/695"
+        },
+                                                                                                                                                                                                                     {
+            filename: "regcandy28.jpg",
+            author: "@meowwwwwNy",
+            date: "07.12.2024",
+            link: "https://t.me/Ki1ttyykat/645"
+        },
+                                                                                                                                                                                                                                 {
+            filename: "regcandy30.jpg",
+            author: "@meowwwwwNy",
+            date: "01.11.2024",
+            link: "https://t.me/Ki1ttyykat/521"
+        },
+                                                                                                                                                                                                                                 {
+            filename: "regcandy31.jpg",
+            author: "@meowwwwwNy",
+            date: "17.11.2024",
+            link: "https://t.me/Ki1ttyykat/503"
+        },
+                                                                                                                                                                                                                                 {
+            filename: "regcandy29.jpg",
+            author: "@meowwwwwNy",
+            date: "01.12.2024",
+            link: "https://t.me/Ki1ttyykat/628"
+        },
+                                                                                                                                                                                                                                             {
+            filename: "regcandy32.jpg",
+            author: "@meowwwwwNy",
+            date: "04.10.2024",
+            link: "https://t.me/Ki1ttyykat/468"
+        },
+                                                                                                                                                                                                                                             {
+            filename: "regcandy33.jpg",
+            author: "@meowwwwwNy",
+            date: "27.09.2024",
+            link: "https://t.me/Ki1ttyykat/415"
+        },
+                                                                                                                                                                                                                                             {
+            filename: "regcandy34.jpg",
+            author: "@meowwwwwNy",
+            date: "23.09.2024",
+            link: "https://t.me/Ki1ttyykat/394"
+        },
+                                                                                                                                                                                                                                                         {
+            filename: "regcandy35.jpg",
+            author: "@meowwwwwNy",
+            date: "06.09.2024",
+            link: "https://t.me/Ki1ttyykat/312"
+        },
+                                                                                                                                                                                                                                                                     {
+            filename: "regcandy36.jpg",
+            author: "@meowwwwwNy",
+            date: "30.08.2024",
+            link: "https://t.me/Ki1ttyykat/193"
+        },
+                                                                                                                                                                                                                                                                                 {
+            filename: "regcandy37.jpg",
+            author: "@meowwwwwNy",
+            date: "26.08.2024",
+            link: "https://t.me/Ki1ttyykat/166"
+        },
+                                                                                                                                                                                                                                                                                             {
+            filename: "regcandy38.jpg",
+            author: "@meowwwwwNy",
+            date: "23.08.2024",
+            link: "https://t.me/Ki1ttyykat/125"
+        },
+                                                                                                                                                                                                                                                                                                         {
+            filename: "regcandy39.jpg",
+            author: "@meowwwwwNy",
+            date: "14.08.2024",
+            link: "https://t.me/Ki1ttyykat/85"
+        },
+                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy40.jpg",
+            author: "@meowwwwwNy",
+            date: "03.08.2024",
+            link: "https://t.me/Ki1ttyykat/41"
+        },
+                                                                                                                                                                                                                                                                                                                                 {
+            filename: "regcandy41.jpg",
+            author: "@meowwwwwNy",
+            date: "29.07.2024",
+            link: "https://t.me/Ki1ttyykat/29"
+        },
+                                                                                                                                                                                                                                                                                                                                             {
+            filename: "regcandy42.jpg",
+            author: "@DemogorgonXD",
+            date: "04.05.2025",
+            link: "https://t.me/LMAO_Demogorgon/84"
+        },
+                                                                                                                                                                                                                                                                                                                                                         {
+            filename: "regcandy43.jpg",
+            author: "@DemogorgonXD",
+            date: "10.04.2025",
+            link: "https://t.me/LMAO_Demogorgon/69"
+        },
+                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy44.jpg",
+            author: "@DemogorgonXD",
+            date: "12.03.2025",
+            link: "https://t.me/LMAO_Demogorgon/32"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                 {
+            filename: "regcandy45.jpg",
+            author: "@DemogorgonXD",
+            date: "08.02.2025",
+            link: "https://t.me/StikersStLoL/1167"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                             {
+            filename: "regcandy46.jpg",
+            author: "@DemogorgonXD",
+            date: "29.11.2024",
+            link: "https://t.me/StikersStLoL/1085"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy47.jpg",
+            author: "@Rosi_rli",
+            date: "16.11.2024",
+            link: "https://t.me/StikersStLoL/1066"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy48.jpg",
+            author: "@DemogorgonXD",
+            date: "14.11.2024",
+            link: "https://t.me/StikersStLoL/1062"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                             {
+            filename: "regcandy49.jpg",
+            author: "@DemogorgonXD",
+            date: "14.10.2024",
+            link: "https://t.me/StikersStLoL/1033"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy50.jpg",
+            author: "@DemogorgonXD",
+            date: "08.09.2024",
+            link: "https://t.me/StikersStLoL/990"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                             {
+            filename: "regcandy51.jpg",
+            author: "@DemogorgonXD",
+            date: "06.09.2024",
+            link: "https://t.me/StikersStLoL/988"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy52.jpg",
+            author: "@DemogorgonXD",
+            date: "23.08.2024",
+            link: "https://t.me/StikersStLoL/948"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                             {
+            filename: "regcandy53.jpg",
+            author: "@DemogorgonXD",
+            date: "23.08.2024",
+            link: "https://t.me/StikersStLoL/944"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy54.jpg",
+            author: "@DemogorgonXD",
+            date: "14.08.2024",
+            link: "https://t.me/StikersStLoL/909"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                             {
+            filename: "regcandy55.jpg",
+            author: "@DemogorgonXD",
+            date: "06.08.2024",
+            link: "https://t.me/StikersStLoL/834"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy56.jpg",
+            author: "@DemogorgonXD",
+            date: "04.08.2024",
+            link: "https://t.me/StikersStLoL/806"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                             {
+            filename: "regcandy57.jpg",
+            author: "@Rosi_rli",
+            date: "05.07.2024",
+            link: "https://t.me/StikersStLoL/414"
+        },  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   {
+            filename: "regcandy58.jpg",
+            author: "@DemogorgonXD",
+            date: "03.07.2024",
+            link: "https://t.me/StikersStLoL/396"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy59.jpg",
+            author: "@Rosi_rli",
+            date: "21.06.2024",
+            link: "https://t.me/StikersStLoL/197"
+        },  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             {
+            filename: "regcandy60.jpg",
+            author: "@Rosi_rli",
+            date: "06.06.2024",
+            link: "https://t.me/StikersStLoL/103"
+        },  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                             {
+            filename: "regcandy61.jpg",
+            author: "@DemogorgonXD, @meowwwwwNy",
+            date: "02.06.2024",
+            link: "https://t.me/StikersStLoL/81"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy62.jpg",
+            author: "@DemogorgonXD",
+            date: "30.05.2024",
+            link: "https://t.me/StikersStLoL/77"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             {
+            filename: "regcandy63.jpg",
+            author: "@DemogorgonXD",
+            date: "20.05.2024",
+            link: "https://t.me/StikersStLoL/34"
+        },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+            filename: "regcandy64.jpg",
+            author: "@DemogorgonXD",
+            date: "18.05.2024",
+            link: "https://t.me/StikersStLoL/28"
+        },
+    ];
+    
+        // ===========================================================
+
+        const gallery = document.getElementById('gallery');
+        const dateInput = document.getElementById('dateFilter');
+        const resetDateBtn = document.getElementById('resetDate');
+        const sortSelect = document.getElementById('sortOrder');
+        const authorsContainer = document.getElementById('authorsList');
+        let selectedAuthors = [];
+
+        function parseDate(dateStr) {
+            const [day, month, year] = dateStr.split('.').map(Number);
+            return new Date(year, month - 1, day);
+        }
+
+        // Разбиваем строку авторов на массив ("@A, @B" -> ["@A", "@B"])
+        function getAuthorsArray(authorString) {
+            return authorString.split(',').map(s => s.trim());
+        }
+
+        function initAuthors() {
+            // Собираем ВСЕХ уникальных авторов, разбивая строки с запятыми
+            const allAuthorsSet = new Set();
+            arts.forEach(art => {
+                getAuthorsArray(art.author).forEach(a => allAuthorsSet.add(a));
+            });
+            const allAuthors = [...allAuthorsSet].sort(); // Сортировка по алфавиту
+
+            authorsContainer.innerHTML = '';
+            allAuthors.forEach(author => {
+                const chip = document.createElement('div');
+                chip.className = 'author-chip';
+                chip.textContent = author;
+                chip.onclick = () => {
+                    chip.classList.toggle('active');
+                    selectedAuthors = selectedAuthors.includes(author) 
+                        ? selectedAuthors.filter(a => a !== author) 
+                        : [...selectedAuthors, author];
+                    renderGallery();
+                };
+                authorsContainer.appendChild(chip);
+            });
+        }
+
+        function renderGallery() {
+            gallery.innerHTML = '';
+            
+            let filteredArts = arts.filter(art => {
+                // 1. Фильтр по дате
+                if (dateInput.value) {
+                    const inputDate = new Date(dateInput.value).setHours(0,0,0,0);
+                    const artDateObj = parseDate(art.date).setHours(0,0,0,0);
+                    if (inputDate !== artDateObj) return false; 
+                }
+                // 2. Фильтр по авторам (Мульти-авторность)
+                if (selectedAuthors.length > 0) {
+                    const artAuthors = getAuthorsArray(art.author);
+                    // Если хотя бы один из авторов арта есть в списке выбранных - показываем
+                    const hasMatch = selectedAuthors.some(sel => artAuthors.includes(sel));
+                    if (!hasMatch) return false;
+                }
+                return true;
+            });
+
+            // Сортировка
+            filteredArts.sort((a, b) => {
+                const dateA = parseDate(a.date);
+                const dateB = parseDate(b.date);
+                return sortSelect.value === 'newest' ? dateB - dateA : dateA - dateB;
+            });
+
+            if (filteredArts.length === 0) {
+                gallery.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-light);">Ничего не найдено 🥺</div>';
+                return;
+            }
+
+            filteredArts.forEach(art => {
+                const card = document.createElement('div');
+                // Если любимый - добавляем класс favorite
+                card.className = `art-card ${art.isFavorite ? 'favorite' : ''}`;
+                
+                // Значок короны для любимых
+                const badge = art.isFavorite ? '<div class="fav-badge">👑</div>' : '';
+
+                card.innerHTML = `
+                    ${badge}
+                    <img src="images/${art.filename}" alt="Art by ${art.author}" loading="lazy">
+                    <div class="card-overlay">
+                        <div class="card-author">${art.author}</div>
+                        <div class="card-date">${art.date}</div>
+                    </div>
+                `;
+                card.onclick = () => openModal(art);
+                gallery.appendChild(card);
+            });
+        }
+
+        dateInput.addEventListener('change', renderGallery);
+        resetDateBtn.addEventListener('click', () => { dateInput.value = ''; renderGallery(); });
+        sortSelect.addEventListener('change', renderGallery);
+
+        // --- МОДАЛЬНОЕ ОКНО ---
+        const modal = document.getElementById('artModal');
+        const mEl = {
+            img: document.getElementById('modalImg'),
+            author: document.getElementById('modalAuthor'),
+            date: document.getElementById('modalDate'),
+            link: document.getElementById('modalLink')
+        };
+
+        function openModal(art) {
+            mEl.img.src = `images/${art.filename}`;
+            mEl.author.textContent = art.author;
+            mEl.date.textContent = art.date;
+            mEl.link.href = art.link;
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        document.getElementById('closeModal').onclick = () => {
+            modal.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        };
+        modal.onclick = (e) => { if(e.target === modal) document.getElementById('closeModal').click(); };
+
+        initAuthors();
+        renderGallery();
+    </script>
+</body>
+</html>
